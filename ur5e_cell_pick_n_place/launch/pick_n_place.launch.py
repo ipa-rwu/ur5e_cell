@@ -3,6 +3,7 @@ from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
 
+
 def generate_launch_description():
     moveit_config = (
         MoveItConfigsBuilder("ur5e_workcell", package_name="ur5e_cell_moveit_config")
@@ -13,7 +14,7 @@ def generate_launch_description():
         )
         .to_moveit_configs()
     )
-    
+
     # MoveItCpp demo executable
     moveit_cpp_node = Node(
         name="pick_n_place_node",
@@ -22,9 +23,5 @@ def generate_launch_description():
         output="screen",
         parameters=[moveit_config.to_dict()],
     )
-    
-    return LaunchDescription(
-        [
-            moveit_cpp_node
-        ]
-    )
+
+    return LaunchDescription([moveit_cpp_node])

@@ -12,9 +12,9 @@ find_package(rclpy REQUIRED)
 find_package(ur_description)
 
 # add this line to include launch and urdf directory
-install(DIRECTORY 
-  launch 
-  urdf 
+install(DIRECTORY
+  launch
+  urdf
   config
   meshes
   rviz

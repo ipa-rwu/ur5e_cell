@@ -11,16 +11,17 @@ bool open_gripper(rclcpp::Client<ur_msgs::srv::SetIO>::SharedPtr set_io_client)
   set_req1.fun = (float)ur_msgs::srv::SetIO::Request::FUN_SET_DIGITAL_OUT;
   set_req1.pin = (float)ur_msgs::srv::SetIO::Request::PIN_DOUT0;
   set_req1.state = (float)ur_msgs::srv::SetIO::Request::STATE_OFF;
-   RCLCPP_INFO(rclcpp::get_logger("set_io"), "%s", ur_msgs::srv::to_yaml(set_req1).c_str());
-  auto fut = set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(set_req1));
+  RCLCPP_INFO(rclcpp::get_logger("set_io"), "%s", ur_msgs::srv::to_yaml(set_req1).c_str());
+  auto fut =
+      set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(set_req1));
   auto fut_res = fut.wait_for(std::chrono::seconds(1));
-  if(fut_res == std::future_status::timeout)
+  if (fut_res == std::future_status::timeout)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO failed with timeout.");
     return false;
   }
 
-  if(!fut.get()->success)
+  if (!fut.get()->success)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO was not successful.");
     return false;
@@ -31,15 +32,16 @@ bool open_gripper(rclcpp::Client<ur_msgs::srv::SetIO>::SharedPtr set_io_client)
   reset_req2.pin = (float)ur_msgs::srv::SetIO::Request::PIN_DOUT1;
   reset_req2.state = (float)ur_msgs::srv::SetIO::Request::STATE_ON;
 
-  fut = set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(reset_req2));
+  fut =
+      set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(reset_req2));
   fut_res = fut.wait_for(std::chrono::seconds(1));
-  if(fut_res == std::future_status::timeout)
+  if (fut_res == std::future_status::timeout)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO failed with timeout.");
     return false;
   }
 
-  if(!fut.get()->success)
+  if (!fut.get()->success)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO was not successful.");
     return false;
@@ -52,17 +54,18 @@ bool close_gripper(rclcpp::Client<ur_msgs::srv::SetIO>::SharedPtr set_io_client)
   set_req2.fun = (float)ur_msgs::srv::SetIO::Request::FUN_SET_DIGITAL_OUT;
   set_req2.pin = (float)ur_msgs::srv::SetIO::Request::PIN_DOUT1;
   set_req2.state = (float)ur_msgs::srv::SetIO::Request::STATE_OFF;
-  
+
   RCLCPP_INFO(rclcpp::get_logger("set_io"), "%s", ur_msgs::srv::to_yaml(set_req2).c_str());
-  auto fut = set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(set_req2));
+  auto fut =
+      set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(set_req2));
   auto fut_res = fut.wait_for(std::chrono::seconds(1));
-  if(fut_res == std::future_status::timeout)
+  if (fut_res == std::future_status::timeout)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO failed with timeout.");
     return false;
   }
 
-  if(!fut.get()->success)
+  if (!fut.get()->success)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO was not successful.");
     return false;
@@ -73,24 +76,23 @@ bool close_gripper(rclcpp::Client<ur_msgs::srv::SetIO>::SharedPtr set_io_client)
   reset_req1.pin = (float)ur_msgs::srv::SetIO::Request::PIN_DOUT0;
   reset_req1.state = (float)ur_msgs::srv::SetIO::Request::STATE_ON;
 
-  fut = set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(reset_req1));
+  fut =
+      set_io_client->async_send_request(std::make_shared<ur_msgs::srv::SetIO::Request>(reset_req1));
   fut_res = fut.wait_for(std::chrono::seconds(1));
-  if(fut_res == std::future_status::timeout)
+  if (fut_res == std::future_status::timeout)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO failed with timeout.");
     return false;
   }
 
-  if(!fut.get()->success)
+  if (!fut.get()->success)
   {
     RCLCPP_INFO(rclcpp::get_logger("set_io"), "Set IO was not successful.");
     return false;
   }
 }
 
-
-
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
   rclcpp::NodeOptions node_options;
@@ -103,7 +105,7 @@ int main(int argc, char ** argv)
   executor.add_node(node);
   std::thread([&executor]() { executor.spin(); }).detach();
   rclcpp::sleep_for(std::chrono::seconds(1));
-  if(!set_io_client->wait_for_service(std::chrono::seconds(3)))
+  if (!set_io_client->wait_for_service(std::chrono::seconds(3)))
   {
     RCLCPP_INFO(node->get_logger(), "No set_io service");
     rclcpp::shutdown();
@@ -112,14 +114,15 @@ int main(int argc, char ** argv)
   static const std::string PLANNING_GROUP = "arm";
 
   auto moveit_cpp_ptr = std::make_shared<moveit_cpp::MoveItCpp>(node);
-  //rclcpp::sleep_for(std::chrono::seconds(1));
+  // rclcpp::sleep_for(std::chrono::seconds(1));
   moveit_cpp_ptr->getPlanningSceneMonitor()->providePlanningSceneService();
 
-  auto planning_components = std::make_shared<moveit_cpp::PlanningComponent>(PLANNING_GROUP, moveit_cpp_ptr);
+  auto planning_components =
+      std::make_shared<moveit_cpp::PlanningComponent>(PLANNING_GROUP, moveit_cpp_ptr);
 
   // Set poses
   tf2::Quaternion q;
-  q.setRPY(-3.14,0,1.57);
+  q.setRPY(-3.14, 0, 1.57);
 
   geometry_msgs::msg::PoseStamped start_position;
   start_position.header.frame_id = "world";
@@ -130,7 +133,6 @@ int main(int argc, char ** argv)
   start_position.pose.orientation.y = q.getY();
   start_position.pose.orientation.z = q.getZ();
   start_position.pose.orientation.w = q.getW();
-
 
   geometry_msgs::msg::PoseStamped approach_object_1;
   approach_object_1.header.frame_id = "world";
@@ -177,7 +179,7 @@ int main(int argc, char ** argv)
 
   planning_components->setGoal(start_position, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_start_plan = planning_components->plan();
-  if(!to_start_plan)
+  if (!to_start_plan)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to start failed.");
     rclcpp::shutdown();
@@ -188,7 +190,7 @@ int main(int argc, char ** argv)
   planning_components->setStartStateToCurrentState();
   planning_components->setGoal(approach_object_1, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_approach1 = planning_components->plan();
-  if(!to_approach1)
+  if (!to_approach1)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to approach 1 failed.");
     rclcpp::shutdown();
@@ -200,7 +202,7 @@ int main(int argc, char ** argv)
   planning_components->setStartStateToCurrentState();
   planning_components->setGoal(pick_object_1, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_pick1 = planning_components->plan();
-  if(!to_pick1)
+  if (!to_pick1)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to pick 1 failed.");
     rclcpp::shutdown();
@@ -213,7 +215,7 @@ int main(int argc, char ** argv)
   planning_components->setStartStateToCurrentState();
   planning_components->setGoal(approach_object_1, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_approach1_1 = planning_components->plan();
-  if(!to_approach1_1)
+  if (!to_approach1_1)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to approach 1 failed.");
     rclcpp::shutdown();
@@ -224,7 +226,7 @@ int main(int argc, char ** argv)
   planning_components->setStartStateToCurrentState();
   planning_components->setGoal(approach_object_2, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_approach2 = planning_components->plan();
-  if(!to_approach2)
+  if (!to_approach2)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to aproach 2 failed.");
     rclcpp::shutdown();
@@ -235,7 +237,7 @@ int main(int argc, char ** argv)
   planning_components->setStartStateToCurrentState();
   planning_components->setGoal(pick_object_2, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_pick2 = planning_components->plan();
-  if(!to_pick2)
+  if (!to_pick2)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to pick 2 failed.");
     rclcpp::shutdown();
@@ -248,7 +250,7 @@ int main(int argc, char ** argv)
   planning_components->setStartStateToCurrentState();
   planning_components->setGoal(start_position, "tool_tip");
   const moveit_cpp::PlanningComponent::PlanSolution to_final_pos = planning_components->plan();
-  if(!to_final_pos)
+  if (!to_final_pos)
   {
     RCLCPP_INFO(node->get_logger(), "Planning to final position failed.");
     rclcpp::shutdown();

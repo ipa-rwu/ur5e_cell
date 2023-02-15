@@ -23,7 +23,7 @@ controller_manager:
 
     forward_position_controller:
       type: position_controllers/JointGroupPositionController
-    
+
     update_rate: 500  # Hz
 
 

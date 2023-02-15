@@ -40,7 +40,7 @@
     <xacro:arg name="sim_ignition" default="false" />
     <xacro:arg name="simulation_controllers" default="" />
     <xacro:arg name="initial_positions_file" default="$(find ur5e_cell_description)/config/initial_positions.yaml" />
-    
+
     <!-- Set arg initial_positions_file as property -->
     <xacro:property name="initial_positions_file" default="$(arg initial_positions_file)" />
 
@@ -90,7 +90,7 @@
     <xacro:schunk_egp50 />
 
     <!-- Instantiate camera. -->
-    <xacro:sensor_d435 
+    <xacro:sensor_d435
         parent="tool0"
         use_nominal_extrinsics="$(arg use_nominal_extrinsics)"
         add_plug="$(arg add_plug)"
@@ -114,7 +114,7 @@
     </joint>
 
     <!-- Add joint between gripper and robot -->
-    <joint 
+    <joint
         name="robot_to_gripper_joint"
         type="fixed"
     >
