@@ -1,0 +1,26 @@
+pick_place_static_demo:
+  ros__parameters:
+    arm_group_name: "arm"
+    object_frame_id: "world"
+    place_frame_id: "world"
+    place_pose: [-0.17, -0.1, 1.05, 1.0, 0.0, 0.0, 0.0]
+    object_pose: [-0.17, 0.16, 1.05, 1.0, 0.0, 0.0, 0.0]
+    detect_state_name: "detect"
+    ik_frame: "tool_tip"
+    pick_offset: 0.12 # pincer_height:0.014
+    place_offset: 0.15
+    io_service_name: "/mock_io_server/set_io"
+    box_size: [0.017, 0.017, 0.017]
+    lift_distance: 0.15
+    find_marker_timeout_seconds: 10
+    path_constraints_file: "path_constraints.yaml"
+    retreat_offset: 0.1
+    compute_path_moveitcpp_skill:
+      planning_pipeline: "pilz_industrial_motion_planner"
+      planner_id: "LIN"
+      planning_attempts: 10
+      step_size: 0.005
+      min_fraction: 0.50
+      max_acceleration_scaling_factor: 0.3
+      max_velocity_scaling_factor: 0.1
+      planning_time: 1.0
