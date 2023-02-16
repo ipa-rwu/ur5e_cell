@@ -10,12 +10,10 @@ def generate_launch_description():
     realsence_launch = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                [FindPackageShare("realsense2_camera"),
-                 "launch", "rs_launch.py"]
+                [FindPackageShare("realsense2_camera"), "launch", "rs_launch.py"]
             )
         ),
-        launch_arguments={"device_type": "d435",
-                          "publish_tf": "false"}.items(),
+        launch_arguments={"device_type": "d435", "publish_tf": "false"}.items(),
     )
 
     realsence_tf_node = Node(
@@ -37,8 +35,7 @@ def generate_launch_description():
     aruco_detection_launch = IncludeLaunchDescription(
         launch_description_source=PythonLaunchDescriptionSource(
             PathJoinSubstitution(
-                [FindPackageShare("aruco_ros"), "launch",
-                 "marker_publisher.launch.py"]
+                [FindPackageShare("aruco_ros"), "launch", "marker_publisher.launch.py"]
             )
         ),
         launch_arguments={
