@@ -1,0 +1,17 @@
+point_to_point_task:
+  ros__parameters:
+    plan_group: "panda_arm"
+    start_state: "ready"
+    waypoints_file: "waypoints_base_panda.yaml"
+    box_size: [0.017, 0.017, 0.017]
+    offset: 0.02
+    ik_frame: "panda_hand"
+    compute_path_moveitcpp_skill:
+      planning_pipeline: "ompl"
+      planner_id: "RRTkConfigDefault"
+      planning_attempts: 10
+      step_size: 0.005
+      min_fraction: 0.50
+      max_acceleration_scaling_factor: 0.3
+      max_velocity_scaling_factor: 0.1
+      planning_time: 1.0
