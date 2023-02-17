@@ -23,20 +23,29 @@ def generate_launch_description():
             "description_package": "ur5e_cell_description",
             "description_file": "workcell.urdf.xacro",
             "launch_rviz": "true",
-            "controllers_file": PathJoinSubstitution([
-                FindPackageShare("ur5e_cell_moveit_servo"),
-                "config",
-                "ros2_controllers.yaml"
-            ])
+            "controllers_file": PathJoinSubstitution(
+                [
+                    FindPackageShare("ur5e_cell_moveit_servo"),
+                    "config",
+                    "ros2_controllers.yaml",
+                ]
+            ),
         }.items(),
     )
-    
+
     forward_velocity_controller_spawner_stopped = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["forward_velocity_controller", "-c", "/controller_manager", "--inactive"],
+        arguments=[
+            "forward_velocity_controller",
+            "-c",
+            "/controller_manager",
+            "--inactive",
+        ],
     )
 
-    ld = LaunchDescription([ur_control_launch, forward_velocity_controller_spawner_stopped])
+    ld = LaunchDescription(
+        [ur_control_launch, forward_velocity_controller_spawner_stopped]
+    )
 
     return ld

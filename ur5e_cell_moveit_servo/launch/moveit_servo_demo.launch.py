@@ -10,24 +10,29 @@ from launch_ros_extras.actions import LoadMoveitConfig, LoadYaml, GenerateMoveit
 from launch_ros.parameter_descriptions import ParameterValue
 from moveit_configs_utils import MoveItConfigsBuilder
 
+
 def generate_launch_description():
     moveit_config = MoveItConfigsBuilder(
         "ur5e_workcell", package_name="ur5e_cell_moveit_config"
     ).to_moveit_configs()
-    
+
     servo_node = Node(
         name="servo_node",
         package="moveit_servo",
         executable="servo_node_main",
         parameters=[
-            PathJoinSubstitution([FindPackageShare("ur5e_cell_moveit_servo"), "config", "ur_servo.yaml"]),
+            PathJoinSubstitution(
+                [FindPackageShare("ur5e_cell_moveit_servo"), "config", "ur_servo.yaml"]
+            ),
             moveit_config.robot_description,
             moveit_config.robot_description_semantic,
             moveit_config.robot_description_kinematics,
         ],
         output="screen",
     )
-    
-    return LaunchDescription([
-        servo_node,
-    ])
+
+    return LaunchDescription(
+        [
+            servo_node,
+        ]
+    )
