@@ -11,10 +11,13 @@
 #include "pick_place_app/skills/io_gripper_with_ur_skill.h"
 #include "pick_place_app/skills/modify_planning_scene_skill.h"
 
-namespace robot_application {
-class PickPlaceStaticTask {
- public:
-  struct Parameters {
+namespace robot_application
+{
+class PickPlaceStaticTask
+{
+public:
+  struct Parameters
+  {
     std::string arm_group_name;
     geometry_msgs::msg::Pose object_pose;
     geometry_msgs::msg::Pose place_pose;
@@ -32,7 +35,8 @@ class PickPlaceStaticTask {
     std::vector<double> pre_place_offset;
     std::vector<double> place_offset;
 
-    void loadParameters(const rclcpp::Node::SharedPtr& node) {
+    void loadParameters(const rclcpp::Node::SharedPtr& node)
+    {
       node->get_parameter("arm_group_name", arm_group_name);
       node->get_parameter("place_frame_id", place_frame_id);
       node->get_parameter("object_frame_id", object_frame_id);
@@ -44,12 +48,10 @@ class PickPlaceStaticTask {
       node->get_parameter("retreat_offset", retreat_offset);
       node->get_parameter("detect_state_name", detect_state_name);
 
-      node->get_parameter_or("path_constraints_file", path_constraints_file,
-                             std::string(""));
+      node->get_parameter_or("path_constraints_file", path_constraints_file, std::string(""));
       node->get_parameter_or("ik_frame", ik_frame, std::string(""));
       node->get_parameter_or("object_name", object_name, std::string("box"));
-      node->get_parameter_or("box_size", box_size,
-                             std::vector<double>({0.017, 0.017, 0.017}));
+      node->get_parameter_or("box_size", box_size, std::vector<double>({ 0.017, 0.017, 0.017 }));
 
       size_t errors = 0;
       errors += !rosparam_shortcuts::get(node, "object_pose", object_pose);
@@ -58,16 +60,14 @@ class PickPlaceStaticTask {
     }
   };
 
-  PickPlaceStaticTask(const rclcpp::Node::SharedPtr& node,
-                      const Parameters& parameters);
+  PickPlaceStaticTask(const rclcpp::Node::SharedPtr& node, const Parameters& parameters);
   void initSkills();
   void loadRobot();
   void executeTask();
 
- protected:
+protected:
   robot_skills::ComputePathWithMoveItCppSkill::SharedPtr comp_path_skill;
-  robot_skills::ComputePathWithMoveItCppSkill::Parameters
-      parameters_comp_path_skill;
+  robot_skills::ComputePathWithMoveItCppSkill::Parameters parameters_comp_path_skill;
 
   robot_skills::ExecuteTrajectorySkill::SharedPtr exec_traj_skill;
 
@@ -79,7 +79,7 @@ class PickPlaceStaticTask {
   robot_trajectory::RobotTrajectoryPtr robot_trajectory;
   moveit_msgs::msg::RobotTrajectory trajectory_msg;
 
- private:
+private:
   rclcpp::Node::SharedPtr node_;
   PickPlaceStaticTask::Parameters param_pick_place_static_;
   moveit::planning_interface::PlanningSceneInterfacePtr psi_;
