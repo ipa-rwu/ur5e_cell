@@ -1,15 +1,5 @@
 repositories:
-  aruco_ros:
+  launch_ros_extras:
     type: git
-    url: https://github.com/pal-robotics/aruco_ros.git
-    version: humble-devel
-
-  rosparam_shortcuts:
-      type: git
-      url: https://github.com/PickNikRobotics/rosparam_shortcuts.git
-      version: ros2
-
-  moveit_resources:
-      type: git
-      url: https://github.com/ipa-rwu/moveit_resources.git
-      version: rwu/fix_demo_launch
+    url: https://gitlab.cc-asp.fraunhofer.de/ipa326/ros-industrial/launch_ros_extras.git
+    version: master
