@@ -2,15 +2,15 @@
 
 initial_positions:
   elbow_joint: -1.57
-  shoulder_lift_joint: -1.57
-  shoulder_pan_joint: -1.57
-  wrist_1_joint: -1.57
-  wrist_2_joint: 1.57
+  shoulder_lift_joint: -1.74
+  shoulder_pan_joint: -1.5708
+  wrist_1_joint: 0.1736
+  wrist_2_joint: 1.5621
   wrist_3_joint: 0.0
 
 elbow_joint: -1.57
-shoulder_lift_joint: -1.57
-shoulder_pan_joint: -1.57
-wrist_1_joint: -1.57
-wrist_2_joint: 1.57
+shoulder_lift_joint: -1.74
+shoulder_pan_joint: -1.5708
+wrist_1_joint: 0.1736
+wrist_2_joint: 1.5621
 wrist_3_joint: 0.0
