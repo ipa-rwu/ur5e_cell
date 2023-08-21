@@ -20,6 +20,7 @@ variables:
 default:
   before_script:
     - export BASE_IMAGE="$BASE_IMAGE_PREFIX:$BASE_IMAGE_SUFFIX"
+    - export TARGET=${CI_REGISTRY_IMAGE}/${NAME}:${CI_COMMIT_REF_NAME//\//-}
 
 .common:
   create_release_tag_script:
@@ -80,7 +81,6 @@ default:
       --tarPath ${PREFIX//:/-}${NAME}${SUFFIX}.tar
   variables:
     NAME: ${CI_JOB_NAME}_${ROS_DISTRO}
-    TARGET: ${CI_REGISTRY_IMAGE}/${NAME}:${CI_COMMIT_REF_NAME//\//-}
   artifacts:
     name: ${NAME}
     paths:
