@@ -15,7 +15,7 @@ precommit:
   stage: format
   extends:
     - .precommit
-    - .on_default_merge
+    - .on_default_merge_event
 
 build:
   tags: *kaniko_runner
