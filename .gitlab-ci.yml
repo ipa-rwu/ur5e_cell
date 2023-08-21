@@ -15,7 +15,7 @@ build:
   extends:
     - .build_with_kaniko
   variables:
-    NAME: ur5e_cell_${ROS_DISTRO}
+    NAME: ur5e_cell_${DEFAULT_ROS_DISTRO}
     FOLDER: ""
 
 publish:
@@ -24,7 +24,7 @@ publish:
   extends:
     - .publish
   variables:
-    NAME: ur5e_cell_${ROS_DISTRO}
+    NAME: ur5e_cell_${DEFAULT_ROS_DISTRO}
 
 stages:
   - build
