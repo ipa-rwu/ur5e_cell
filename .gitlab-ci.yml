@@ -1,5 +1,6 @@
 include:
   - local: ci/gitlab_templates/JOB_TEMPLATE.yml
+  - local: ci/gitlab_templates/RULES.yml
 
 variables:
   DEFAULT_ROS_DISTROS: humble
@@ -23,6 +24,7 @@ publish:
   stage: publish
   extends:
     - .publish
+    - .on_default_merge_tag
   variables:
     NAME: ur5e_cell_${DEFAULT_ROS_DISTRO}
 
