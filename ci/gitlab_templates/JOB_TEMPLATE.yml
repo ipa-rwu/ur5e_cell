@@ -62,6 +62,7 @@ default:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
+    - echo "commit=${CI_COMMIT_REF_NAME}"
     - echo "Target=$TARGET"
     - /kaniko/executor
       --context "${CI_PROJECT_DIR}/${FOLDER}"
