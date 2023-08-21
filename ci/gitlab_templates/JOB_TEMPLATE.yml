@@ -1,0 +1,114 @@
+variables:
+  DEFAULT_ROS_DISTRO: humble
+  BASE_IMAGE_PREFIX: public.ecr.aws/docker/library/ros
+  BASE_IMAGE_SUFFIX: humble
+  BUILDER_PREFIX: "ghcr.io/ipa-rwu/"
+  BUILDER_SUFFIX: ":latest"
+  CMAKE_ARGS: "-DCMAKE_BUILD_TYPE=RELEASE"
+  DOCKER_BUILDKIT: 1
+  DOCKER_TLS_CERTDIR: ""
+  FOLDER: ${CI_JOB_NAME}/
+  NAME: ${CI_JOB_NAME}
+  PREFIX: "${CI_PIPELINE_ID}:"
+  ROSINSTALL_CI_JOB_TOKEN: "true"
+  STABLE_BRANCH: main
+  SUFFIX: ""
+  TARGET_LATEST: ${NAME}:latest
+  TARGET_RELEASE: ${NAME}:${CI_COMMIT_TAG//\//-}
+
+
+default:
+  before_script:
+    - export BASE_IMAGE="$BASE_IMAGE_PREFIX:$BASE_IMAGE_SUFFIX"
+
+.common:
+  create_release_tag_script:
+    - |
+      TARGET=${CI_REGISTRY_IMAGE}/${NAME}:${CI_COMMIT_REF_NAME//\//-}
+      if [ "$CI_COMMIT_REF_NAME" = "main" ] || [ "$CI_COMMIT_REF_NAME" = "master" ]; then
+        TARGET=$TARGET_LATEST
+      fi
+      if [[ $(expr match "$CI_COMMIT_REF_NAME" ".*$STABLE_BRANCH") != 0 ]]; then
+        TARGET=$TARGET_LATEST
+      fi
+      if [ $CI_COMMIT_TAG ]; then
+        convert_tag=${CI_COMMIT_TAG//\//-}
+        for ros_version in $ROS_VERSIONS; do
+          if [[ $(expr match "$convert_tag" ".*$ros_version-") != 0 ]]; then
+            distro_prefix=${ros_version}-
+            remove_distro_tag=${convert_tag#"$distro_prefix"}
+            TARGET_RELEASE=${CI_REGISTRY_IMAGE}/${NAME}:${remove_distro_tag}
+            TARGET=$TARGET_RELEASE
+            break
+          fi
+        done;
+      fi
+
+
+
+.precommit:
+  image: python:3.12.0b4-slim
+  before_script:
+    - apt update && apt install -y --no-install-recommends git
+    - pip install pre-commit
+    - apt install -y --no-install-recommends clang-format-14
+  script:
+    - pre-commit run --all-files
+
+
+.build_with_kaniko:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}/${FOLDER}"
+      --build-arg SUFFIX
+      --build-arg PREFIX
+      --build-arg BUILDER_PREFIX
+      --build-arg BUILDER_SUFFIX
+      --build-arg BASE_IMAGE
+      --build-arg ROS_DISTRO
+      --build-arg ROSINSTALL_CI_JOB_TOKEN
+      --build-arg CI_JOB_TOKEN
+      --build-arg BUILDKIT_INLINE_CACHE=1
+      --build-arg CMAKE_ARGS
+      --dockerfile "${CI_PROJECT_DIR}/${FOLDER}Dockerfile"
+      --no-push
+      --destination "${TARGET}"
+      --tarPath ${PREFIX//:/-}${NAME}${SUFFIX}.tar
+  variables:
+    NAME: ${CI_JOB_NAME}_${ROS_DISTRO}
+  artifacts:
+    name: ${NAME}
+    paths:
+      - ${PREFIX//:/-}${NAME}${SUFFIX}.tar
+    expire_in: 10 minutes
+
+.publish:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - !reference [.common, create_release_tag_script]
+    - >
+      echo "FROM ${PREFIX}${NAME}${SUFFIX}" |
+      /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile /dev/stdin
+      --destination ${TARGET}
+  needs:
+    - build
+
+.doxygen-job:
+  image: ubuntu:latest
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq doxygen graphviz
+  script:
+    - doxygen Doxyfile
+    - mv doc/html/ public/
+  artifacts:
+    paths:
+    - public
+  when: always

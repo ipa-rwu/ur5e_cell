@@ -1,0 +1,31 @@
+include:
+  - local: ci/gitlab_templates/JOB_TEMPLATE.yml
+
+variables:
+  DEFAULT_ROS_DISTROS: humble
+  STABLE_BRANCH: main
+
+.common:
+  tags: &kaniko_runner
+    - intranet
+
+build:
+  tags: *kaniko_runner
+  stage: build
+  extends:
+    - .build_with_kaniko
+  variables:
+    NAME: ur5e_cell_${ROS_DISTRO}
+    FOLDER: ""
+
+publish:
+  tags: *kaniko_runner
+  stage: publish
+  extends:
+    - .publish
+  variables:
+    NAME: ur5e_cell_${ROS_DISTRO}
+
+stages:
+  - build
+  - publish
