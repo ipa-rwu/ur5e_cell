@@ -10,6 +10,13 @@ variables:
   tags: &kaniko_runner
     - intranet
 
+precommit:
+  tags: *kaniko_runner
+  stage: format
+  extends:
+    - .precommit
+    - .on_default_merge
+
 build:
   tags: *kaniko_runner
   stage: build
@@ -29,5 +36,6 @@ publish:
     NAME: ur5e_cell_${DEFAULT_ROS_DISTRO}
 
 stages:
+  - format
   - build
   - publish
